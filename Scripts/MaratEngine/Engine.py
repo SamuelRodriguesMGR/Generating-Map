@@ -18,12 +18,13 @@ class Loop:
         self.HEIGHT   : int = 648
         self.WIDTH    : int = 1152
         self.running  : bool = True
-        self.BG_COLOR : tuple = BLACK
 
-        self.head : Node2D = None
-        self.tail : Node2D = None
+        self.BG_COLOR = BLACK
+        
+        self.head: Node2D | None = None
+        self.tail: Node2D | None = None
 
-        self.update_screen_size(self.WIDTH, self.HEIGHT)
+        self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
         self.clock = pygame.time.Clock()
         
         self.mouse_button_pressed : list = [False, False, False]
@@ -41,7 +42,7 @@ class Loop:
 
         
     def draw(self) -> None:
-        current : Node2D = self.head
+        current: Node2D | None = self.head
         while current is not None:
             current.draw()
             current._process()
@@ -83,7 +84,7 @@ class Loop:
 
     def get_stack(self) -> list[Node2D]:
         array : list = []
-        current : Node2D = self.head
+        current: Node2D | None = self.head
         while current is not None:
             array.append(current)
             current = current.next
@@ -92,14 +93,9 @@ class Loop:
     def __str__(self) -> str:
         """Выводит стек в виде строки (для наглядности)"""
         elements : list[Node2D] = []
-        current : Node2D = self.head
+        current: Node2D | None = self.head
         while current is not None:
             elements.append(str(current))
             current = current.next
 
         return " -> ".join(reversed(elements)) if elements else "Пустой стек"
-
-    def update_screen_size(self, width : int, height : int) -> None:
-        self.HEIGHT : int = height
-        self.WIDTH  : int = width
-        self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT))

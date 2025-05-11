@@ -3,13 +3,13 @@ import math
 import random
 from MaratEngine.Engine import *
 from MaratEngine.utils.Node import *
+from typing import Final
 
 
 class Game(Loop):
     def __init__(self) -> None:
         super().__init__()
-
-        self.add_child(Sprite(self.screen, "Assets/rf-fiz-ng.jpg", 0, 0, 0.8))
+        self.BG_COLOR = GREEN
 
         self.cubic : Square = Square(self.screen, 500, 300)
         self.cubic.color = RED
@@ -19,7 +19,7 @@ class Game(Loop):
         self.add_child(self.cubic)
 
         self.TOWNS        : list[str] = ["Moscow", "Perm", "Ekaterinburg"]
-        self.player_towns : list[Town] = [None] * self.TOWNS.__len__()
+        self.player_towns : list[Town | None] = [None] * self.TOWNS.__len__()
         self.current_town : int = 0
     
     def _process(self) -> None:
@@ -50,17 +50,16 @@ class Game(Loop):
                 if (town1 == town2) or (town1 is None) or (town2 is None):
                     continue
                 
-                vector = [town2.x - town1.x, town2.y - town1.y]
-                distance = math.sqrt(vector[0] ** 2 + vector[1] ** 2)
+                vector   : list = [town2.x - town1.x, town2.y - town1.y]
+                distance : float = math.sqrt(vector[0] ** 2 + vector[1] ** 2)
 
-                normalized_vector : list = [0, 0]
+                normalized_vector : list = [0] * 2
                 
                 if distance:
                     normalized_vector = [vector[0] / distance, vector[1] / distance]
 
-                angle_rad = math.atan2(normalized_vector[0], normalized_vector[1])
-
-                angle_deg = math.degrees(angle_rad)
+                angle_rad : float = math.atan2(normalized_vector[0], normalized_vector[1])
+                angle_deg : float = math.degrees(angle_rad)
 
                 print(town1.name, town2.name, angle_deg, distance)
                 
@@ -94,6 +93,12 @@ class Game(Loop):
 
         elif not mouse_pressed[0]:
             self.mouse_button_pressed[0] = False
+
+        # Правая кнопка мыши
+        if mouse_pressed[2]:
+            new_circle : Circle = Circle(self.screen, pos[0] + self.cubic.size, pos[1] + self.cubic.size, 24)
+            new_circle.color = BLUE
+            self.add_child(new_circle)
 
 
 class Town(Sprite):

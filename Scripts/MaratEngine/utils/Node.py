@@ -1,4 +1,6 @@
+from __future__ import annotations
 import pygame
+import os
 
 
 BLACK : tuple = (0, 0, 0)
@@ -8,10 +10,10 @@ BLUE  : tuple = (0, 0, 255)
 
 
 class Node2D:
-    def __init__(self, screen, x : int = 0, y : int = 0, size : int = 1.0) -> None:
+    def __init__(self, screen, x : int = 0, y : int = 0, size : float = 1.0) -> None:
         self.screen = screen
-        self.prev = None
-        self.next = None
+        self.prev : Node2D | None = None
+        self.next : Node2D | None = None
         self.x : int = x
         self.y : int = y
         self.color : tuple = BLACK
@@ -28,7 +30,7 @@ class Node2D:
 class Shape(Node2D):
     def __init__(self, screen, x = 0, y = 0, size = 1):
         Node2D.__init__(self, screen, x, y, size)  # Инициализация Node2D
-        self.contour_thickness : int = 0 # заполнить фигуруs
+        self.contour_thickness : int = 0 # заполнить фигуру
         
 class Square(Shape):    
     def __init__(self, screen, x=0, y=0, size=1):
