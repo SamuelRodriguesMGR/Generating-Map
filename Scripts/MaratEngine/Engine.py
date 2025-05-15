@@ -29,30 +29,40 @@ class Loop:
         
         self.mouse_button_pressed : list = [False, False, False]
 
-    def _process(self):
-        self.clock.tick(self.FPS)
+    def update(self):
+        while self.running:
+            for event in pygame.event.get():    
+                self._input(event)
 
-        # Рендеринг
-        self.screen.fill(self.BG_COLOR)
-        
-        self.draw()
+            self.clock.tick(self.FPS)
 
-        # после отрисовки всего, переворачиваем экран
-        pygame.display.flip()
+            # Рендеринг
+            self.screen.fill(self.BG_COLOR)
 
-        
+            self._process()
+            self.draw()
+
+            # после отрисовки всего, переворачиваем экран
+            pygame.display.flip()
+    pygame.quit()
+
+    def _process(self) -> None:
+        pass
+
+    def _input(self, event) -> None:
+        pass
+
     def draw(self) -> None:
         current: Node2D | None = self.head
         while current is not None:
             current.draw()
-            current._process()
+            current.update()
             current = current.next
 
     def is_empty(self):
         return self.tail is None
     
     def add_child(self, node : Node2D) -> Node2D:
-
         # Если стэк пуст
         if self.is_empty():
             self.head = node
@@ -74,21 +84,11 @@ class Loop:
         if node == self.tail:
             self.tail = prev_node
 
-        # 1 -> (2) -> 3
         if prev_node:
-            # 1 -> 3
             prev_node.next = next_node
-        if next_node:
-            # 1 <- 3
-            next_node.prev = prev_node
 
-    def get_stack(self) -> list[Node2D]:
-        array : list = []
-        current: Node2D | None = self.head
-        while current is not None:
-            array.append(current)
-            current = current.next
-        return array
+        if next_node:
+            next_node.prev = prev_node
 
     def __str__(self) -> str:
         """Выводит стек в виде строки (для наглядности)"""

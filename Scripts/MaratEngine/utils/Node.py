@@ -22,7 +22,7 @@ class Node2D:
     def draw(self) -> None:
         pass
 
-    def _process(self) -> None:
+    def update(self) -> None:
         pass
 
         
@@ -53,7 +53,7 @@ class Label(Node2D):
         self.font = pygame.font.Font(None, size) 
         self.text : str = text
 
-    def _process(self) -> None:
+    def update(self) -> None:
         text_surface = self.font.render(self.text, True, self.color)
         text_rect = text_surface.get_rect(topleft=(self.x, self.y))
         self.screen.blit(text_surface, text_rect)

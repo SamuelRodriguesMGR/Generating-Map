@@ -1,10 +1,12 @@
 import pygame
 import math
 import random
+import json
 from MaratEngine.Engine import *
 from MaratEngine.utils.Node import *
-from typing import Final
+from os import system
 
+system("cls")
 
 class Game(Loop):
     def __init__(self) -> None:
@@ -21,28 +23,45 @@ class Game(Loop):
         self.TOWNS        : list[str] = ["Moscow", "Perm", "Ekaterinburg"]
         self.player_towns : list[Town | None] = [None] * self.TOWNS.__len__()
         self.current_town : int = 0
-    
-    def _process(self) -> None:
-        while self.running:
-            for event in pygame.event.get():    
-                if event.type == pygame.QUIT: 
-                    self.running = False
-                
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_1:
-                        self.current_town = 0
 
-                    if event.key == pygame.K_2:
-                        self.current_town = 1
-                        
-                    if event.key == pygame.K_3:
-                        self.current_town = 2
-            
-            super()._process()
-            
-            self._input()
+    def _process(self) -> None:
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+        self.cubic.x = mouse_x - self.cubic.size / 2
+        self.cubic.y = mouse_y - self.cubic.size / 2
+
+    def _input(self, event) -> None:
+        if event.type == pygame.QUIT: 
+            self.running = False
         
-        pygame.quit()
+        # события клавиатуры
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_1:
+                self.current_town = 0
+
+            if event.key == pygame.K_2:
+                self.current_town = 1
+                
+            if event.key == pygame.K_3:
+                self.current_town = 2
+
+        # события мыши
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_x, mouse_y = event.pos
+
+            if event.button == 1: 
+                self.add_town(mouse_x, mouse_y)
+        
+    def add_town(self, x, y) -> None:
+        SCALE : int = 2
+        pos : list = [x - 8 * SCALE, y - 8 * SCALE]
+
+        if not self.player_towns[self.current_town]:
+            self.player_towns[self.current_town] = Town(self.screen, self.TOWNS[self.current_town], x=pos[0], y=pos[1], size=SCALE)
+            self.add_child(self.player_towns[self.current_town])
+
+        else:
+            self.player_towns[self.current_town].change_position(pos)
+
 
     def distances(self) -> None:
         for town1 in self.player_towns:
@@ -65,42 +84,6 @@ class Game(Loop):
                 
         print()
 
-
-    def _input(self) -> None:
-        mouse_pressed : tuple = pygame.mouse.get_pressed()
-        mouse_position : tuple = pygame.mouse.get_pos()
-
-        if self.player_towns[0]: 
-            self.distances()
-
-
-        SCALE : int = 2
-        pos : list = [mouse_position[0] - 8 * SCALE, mouse_position[1] - 8 * SCALE]
-        
-        self.cubic.x = mouse_position[0] - self.cubic.size / 2
-        self.cubic.y = mouse_position[1] - self.cubic.size / 2
-
-
-        # Левая кнопка мыши
-        if mouse_pressed[0] and not self.mouse_button_pressed[0]:
-            self.mouse_button_pressed[0] = True
-
-            if not self.player_towns[self.current_town]:                  
-                self.player_towns[self.current_town] = Town(self.screen, self.TOWNS[self.current_town], x=pos[0], y=pos[1], size=SCALE)
-                self.add_child(self.player_towns[self.current_town])
-            else:
-                self.player_towns[self.current_town].change_position(pos)
-
-        elif not mouse_pressed[0]:
-            self.mouse_button_pressed[0] = False
-
-        # Правая кнопка мыши
-        if mouse_pressed[2]:
-            new_circle : Circle = Circle(self.screen, pos[0] + self.cubic.size, pos[1] + self.cubic.size, 24)
-            new_circle.color = BLUE
-            self.add_child(new_circle)
-
-
 class Town(Sprite):
     def __init__(self, screen, name_town : str, image_path = "Assets/town.png", x = 0, y = 0, size = 1):
         super().__init__(screen, image_path, x, y, size)
@@ -117,7 +100,14 @@ class Town(Sprite):
         self.label_town.x = pos[0]
         self.label_town.y = pos[1] + 32
 
-
 if __name__ == "__main__":
     game : Game = Game()
-    game._process()
+    game.update()
+
+
+#  with open("../JsonFiles/ru.json", encoding="utf-8") as file:
+#     data = json.load(file)
+#     print(json.dumps(data, indent=4, sort_keys=True)) 
+#     for i in range(10):    
+#         if "name" in data["actionHistory"][i]:
+#             print(data["actionHistory"][i]["name"])  
