@@ -20,14 +20,12 @@ class Loop:
         self.running  : bool = True
 
         self.BG_COLOR = BLACK
-        
-        self.head: Node2D | None = None
-        self.tail: Node2D | None = None
 
         self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
         self.clock = pygame.time.Clock()
         
-        self.mouse_button_pressed : list = [False, False, False]
+        self.group_sprites : pygame.sprite.LayeredUpdates = pygame.sprite.LayeredUpdates()  
+        
 
     def update(self):
         while self.running:
@@ -40,62 +38,23 @@ class Loop:
             self.screen.fill(self.BG_COLOR)
 
             self._process()
-            self.draw()
+            self._draw()
 
             # после отрисовки всего, переворачиваем экран
             pygame.display.flip()
     pygame.quit()
 
-    def _process(self) -> None:
-        pass
-
     def _input(self, event) -> None:
         pass
 
-    def draw(self) -> None:
-        current: Node2D | None = self.head
-        while current is not None:
-            current.draw()
-            current.update()
-            current = current.next
-
-    def is_empty(self):
-        return self.tail is None
+    def _draw(self) -> None:
+        self.group_sprites.draw(self.screen)  
     
-    def add_child(self, node : Node2D) -> Node2D:
-        # Если стэк пуст
-        if self.is_empty():
-            self.head = node
-            self.tail = node
-        else:
-            self.tail.next = node
-            node.prev = self.tail
-            self.tail = node
-
-        return node
+    def _process(self) -> None:
+        self.group_sprites.update() 
+    
+    def add_child(self, node : Node2D) -> None:
+        self.group_sprites.add(node, layer=node.z_index)  
    
     def remove_child(self, node : Node2D) -> None:
-        prev_node : Node2D = node.prev
-        next_node : Node2D = node.next
-
-        if node == self.head:
-            self.head = next_node
-
-        if node == self.tail:
-            self.tail = prev_node
-
-        if prev_node:
-            prev_node.next = next_node
-
-        if next_node:
-            next_node.prev = prev_node
-
-    def __str__(self) -> str:
-        """Выводит стек в виде строки (для наглядности)"""
-        elements : list[Node2D] = []
-        current: Node2D | None = self.head
-        while current is not None:
-            elements.append(str(current))
-            current = current.next
-
-        return " -> ".join(reversed(elements)) if elements else "Пустой стек"
+        self.group_sprites.remove(node)
