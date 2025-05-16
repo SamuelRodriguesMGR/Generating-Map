@@ -21,9 +21,6 @@ class Game(Loop):
         self.cubic.y = mouse_y - self.cubic.size / 2
 
     def _input(self, event) -> None:
-        if event.type == pygame.QUIT: 
-            self.running = False
-        
         # события клавиатуры
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_1:
