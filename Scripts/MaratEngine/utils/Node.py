@@ -9,14 +9,14 @@ GREEN  : tuple = (0, 255, 0)
 
 
 class Node2D(pygame.sprite.Sprite):
-    def __init__(self, x=0, y=0, size=1.0):
+    def __init__(self, x : float=0.0, y : float=0.0, size : float=1.0):
         super().__init__()
-        self.x = x
-        self.y = y
-        self.color = BLACK
-        self.size = size
-        self.visible = True
-        self._z_index = 0
+        self.x        : float = x
+        self.y        : float = y
+        self.color    : tuple | str = BLACK
+        self.size     : float = size
+        self.visible  : bool = True
+        self._z_index : int = 0
         
         # Для Sprite обязательно нужны image и rect
         self.image = None
@@ -28,6 +28,14 @@ class Node2D(pygame.sprite.Sprite):
         self.image = pygame.Surface((self.size, self.size), pygame.SRCALPHA)
         self.rect = self.image.get_rect(topleft=(self.x, self.y))
     
+    def draw(self, screen):
+        # Отрисовка на экране (если нужно сохранить старый интерфейс)
+        if self.visible and self.image:
+            screen.blit(self.image, self.rect)
+
+    def update(self):
+        self.rect.topleft = (self.x, self.y)
+
     @property
     def z_index(self):
         return self._z_index
@@ -37,14 +45,6 @@ class Node2D(pygame.sprite.Sprite):
         self._z_index = value
         for group in self.groups():
             group.change_layer(self, value)
-    
-    def update(self):
-        self.rect.topleft = (self.x, self.y)
-
-    def draw(self, screen):
-        # Отрисовка на экране (если нужно сохранить старый интерфейс)
-        if self.visible and self.image:
-            screen.blit(self.image, self.rect)
 
         
 # Фигуры
@@ -53,12 +53,13 @@ class Shape(Node2D):
         super().__init__(x, y, size)
         self.contour_thickness : int = 0 # заполнить фигуру
     
-    def _draw_shape(self):
-        pass
-    
     def update(self):
         super().update()
         self._draw_shape()
+
+    def _draw_shape(self):
+        pass
+    
 
 class Square(Shape):
     def __init__(self, x=0, y=0, size=1):
@@ -98,10 +99,10 @@ class Label(Node2D):
 
 # Картинки
 class Sprite(Node2D):
-    def __init__(self, image_path, x=0, y=0, size=1, angle : float=0.0):
+    def __init__(self, image_path : str, x=0, y=0, size=1, angle : float=0.0):
         super().__init__(x, y, size)
         self.image = pygame.image.load(image_path).convert_alpha()
-        # Масштаб
+        # Масштабs
         self.image = pygame.transform.scale(
             self.image,
             (int(self.image.get_width() * self.size),

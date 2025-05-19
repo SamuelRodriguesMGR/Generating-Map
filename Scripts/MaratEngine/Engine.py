@@ -9,6 +9,14 @@ BLUE   : tuple = (0, 0, 255)
 YELLOW : tuple = (255, 255, 0)
 GREEN  : tuple = (0, 255, 0)
 
+# endesega16
+PALLETE : list =[
+    "#e4a672", "#b86f50", "#743f39", "#3f2832",
+    "#9e2835", "#e53b44", "#fb922b", "#ffe762", 
+    "#63c64d", "#327345", "#193d3f", "#4f6781", 
+    "#afbfd2", "#ffffff", "#2ce8f4", "#0484d1"
+]
+
 class Loop:
     def __init__(self) -> None:
         pygame.init()
@@ -24,7 +32,7 @@ class Loop:
         self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
         self.clock = pygame.time.Clock()
         
-        self.group_sprites : pygame.sprite.LayeredUpdates = pygame.sprite.LayeredUpdates()  
+        self.stack : pygame.sprite.LayeredUpdates = pygame.sprite.LayeredUpdates()  
         
 
     def update(self):
@@ -50,13 +58,16 @@ class Loop:
         pass
 
     def _draw(self) -> None:
-        self.group_sprites.draw(self.screen)  
+        self.stack.draw(self.screen)  
     
     def _process(self) -> None:
-        self.group_sprites.update() 
+        self.stack.update() 
     
     def add_child(self, node : Node2D) -> None:
-        self.group_sprites.add(node, layer=node.z_index)  
+        self.stack.add(node, layer=node.z_index)  
    
     def remove_child(self, node : Node2D) -> None:
-        self.group_sprites.remove(node)
+        self.stack.remove(node)
+
+def lerp(fr : float, to : float, weight : float):
+    return fr + (to - fr) * weight
