@@ -1,21 +1,25 @@
 import pygame
 from .utils.Node import Node2D
 
-
-BLACK  : tuple = (0, 0, 0)
-WHITE  : tuple = (255, 255, 255)
-RED    : tuple = (255, 0, 0)
-BLUE   : tuple = (0, 0, 255)
-YELLOW : tuple = (255, 255, 0)
-GREEN  : tuple = (0, 255, 0)
-
 # endesega16
-PALLETE : list =[
-    "#e4a672", "#b86f50", "#743f39", "#3f2832",
-    "#9e2835", "#e53b44", "#fb922b", "#ffe762", 
-    "#63c64d", "#327345", "#193d3f", "#4f6781", 
-    "#afbfd2", "#ffffff", "#2ce8f4", "#0484d1"
-]
+DICT_PALLETE : dict = {
+    "very_light_brown" : "#e4a672",
+    "light_brown"      : "#b86f50",
+    "dark_brown"       : "#743f39",
+    "very_dark_brown"  : "#3f2832",
+    "dark_red"         : "#9e2835",
+    "red"              : "#e53b44",
+    "orange"           : "#fb922b",
+    "yellow"           : "#ffe762",
+    "light_green"      : "#63c64d",
+    "green"            : "#327345",
+    "dark_green"       : "#193d3f",
+    "gray"             : "#4f6781",
+    "light_gray"       : "#afbfd2",
+    "white"            : "#ffffff",
+    "cyan"             : "#2ce8f4",
+    "blue"             : "#0484d1"
+}
 
 class Loop:
     def __init__(self) -> None:
@@ -27,7 +31,7 @@ class Loop:
         self.WIDTH    : int = 1152
         self.running  : bool = True
 
-        self.BG_COLOR = BLACK
+        self.BG_COLOR = (0, 0, 0)
 
         self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
         self.clock = pygame.time.Clock()

@@ -1,19 +1,12 @@
 import pygame
 
-BLACK  : tuple = (0, 0, 0)
-WHITE  : tuple = (255, 255, 255)
-RED    : tuple = (255, 0, 0)
-BLUE   : tuple = (0, 0, 255)
-YELLOW : tuple = (255, 255, 0)
-GREEN  : tuple = (0, 255, 0)
-
 
 class Node2D(pygame.sprite.Sprite):
     def __init__(self, x : float=0.0, y : float=0.0, size : float=1.0):
         super().__init__()
         self.x        : float = x
         self.y        : float = y
-        self.color    : tuple | str = BLACK
+        self.color    : tuple | str = (0, 0, 0)
         self.size     : float = size
         self.visible  : bool = True
         self._z_index : int = 0
