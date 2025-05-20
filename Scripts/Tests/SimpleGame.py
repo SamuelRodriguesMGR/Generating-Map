@@ -1,3 +1,7 @@
+from pathlib import Path
+from sys import path
+path.append(str(Path(__file__).parent.parent))
+
 import pygame
 from random import random
 from MaratEngine.Engine import *
@@ -7,10 +11,10 @@ from MaratEngine.utils.Node import *
 class Game(Loop):
     def __init__(self) -> None:
         super().__init__()
-        self.BG_COLOR = PALLETE[3]
+        self.BG_COLOR = DICT_PALLETE["very_dark_brown"]
 
         self.cubic : Square = Square(500, 300, 20)
-        self.cubic.color = PALLETE[4]
+        self.cubic.color = DICT_PALLETE["dark_red"]
         self.cubic.border_radius = 4
         self.cubic.z_index = 2
 
@@ -28,11 +32,11 @@ class Game(Loop):
         if mouse_pressed[0]:
             node = GravityAgent(self.cubic, -1, mouse_x - self.cubic.size, mouse_y - self.cubic.size, 20)
             self.add_child(node)
-            node.color = PALLETE[15]
+            node.color = DICT_PALLETE["blue"]
 
         if mouse_pressed[2]:
             node = GravityAgent(self.cubic, 1, mouse_x - self.cubic.size, mouse_y - self.cubic.size, 20)
-            node.color = PALLETE[5]
+            node.color = DICT_PALLETE["red"]
             self.add_child(node)
 
 
